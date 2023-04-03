@@ -15,44 +15,56 @@
 -->
 # Microsoft Intune Node
 
-A simple authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0 and above. This node integrates with Microsoft Intune and Graph API. It allows to evaluate device's compliance posture and return the result. It also allows saving device information (to sharedState object) which can be used by subsequent nodes.
-
-
-Copy the .jar file from the ../target directory into the ../web-container/webapps/openam/WEB-INF/lib directory where AM is deployed.  Restart the web container to pick up the new node.  The node will then appear in the authentication trees components palette.
-
+This node integrates with Microsoft Intune via Graph API. It evaluates the device's compliancy posture and returns the result. It can also save device information to the SharedState that can subsequently be used by other nodes.
 
 ##  Configuration properties of the node
-- Header containing Device ID
-    >We assume that TLS termination takes place before hitting AM. Termination gateway needs to take CN from device certificate presented and put into a header.
 
-- Azure Tenant ID
-    >Tenant ID could be in a form of UUID-like string or actual tenant name eg. rocknnroll.onmicrosoft.com.
+- DeviceID Attribute Name
+    >This is the value of the SSL_Client_S_DN from the client certificate presented at the TLS termination gateway. The default location for this value is expected in the Request Header. Format should be CN=f47d8e59-b60e-48a5-adc1-622cb2244zzz
+- DeviceID in SharedState
+    >The default location for DeviceID is expected to be in the Header.  Setting this value to true indicates to look in the SharedState for the DeviceID instead of the Header. Format is the same: CN=f47d8e59-b60e-48a5-adc1-622cb2244zzz
+- Directory (tenant) ID
+    >Tenant Id is the Azure Active Directory\u2019s Global unique identifier (GUID)
+- Application (client) ID
+    >The application ID, or client ID, is a value the Microsoft identity platform assigns to your application when you register it in Azure AD.
+- Client Secret
+    >Sometimes called an application password, a client secret is a string value your app can use in place of a certificate to identity itself.
+- Azure Admin User Name
+    >This is the administrative username.
+- Azure Admin User Password
+    >This is the administrative password.
+- Save Device Properties to shared state
+    >If enabled, all device info will be saved to the SharedState with INTUNE_ prepended to the key name. Null and empty string values will not be placed into SharedState.  Details on possible return properties can be found [here](https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-beta#properties).
+- Save installed apps to shared state
+    >If enabled, the apps installed on the Mobile Device are extracted and saved to the Shared State with key name - INTUNE_INSTALLED_APPS 
 
-- Azure App Registration Application ID
-    >That is the name of the OAuth2 Client (application) that has been created, given privileges (scopes) to access API data.
+## Outcomes
 
-- Azure App Registration Secret
-    >Has to be created as part of application creation process. Keys -> Passwords section of app configuration.
+- Compliant
+    > Take if the device is compliant
+- Not Compliant
+    > Take if the device is not compliant
+- In Grace Period
+    > Take if the device is not compliant but still has access to corporate resources
+- Config Manager
+    > Take if Managed by Config Manager
+- Conflict
+    > Take if conflict with other rules
+- No Id
+    > Take if no DeviceId found in the Header or SharedState
+- Status Unknown
+    > Take if unknown
+- Error
+    > Take if any error occurs, the stacktrace and message is placed in the SharedState
 
-- Azure AD User Name
-    >Intune administrative user name who consented to giving right to the app above.
+## Prerequisite
 
-- Azure AD User Password
-    >Above user's password.
+The DeviceId needs to be obtained from the TLS handshake.  That DeviceId needs to be placed in the Header between a proxy and Identity Cloud, or needs to be placed in the SharedState.  Eitherway needs to occur before reaching this Microsoft Intune Node.  
 
-- Extract Device Properties
-    >When accessing GraphApi we’re also extracting some of the most important device characteristics i.e. deviceName, deviceType, operatingSystem, osVersion,deviceRegistrationState, model, manufacturer, serialNumber. If this option is enabled all of these characteristics will be put into shared state.
-    That information is: `deviceName`, `deviceType`, `operatingSystem`, `osVersion`, `deviceRegistrationState`, `model`, `manufacturer`, `serialNumber`
-   
-- Extract information about installed apps?
-    >If enabled apps installed on Mobile Device are extracted. Apps names can then be used below in Black List configuration. In addition 'blackListedAppPresent' property will be saved into Shared State.
+##  Addtitional Steps for Self Managed Install
+For self managed deployments, copy the .jar file from the ../target directory into the ../web-container/webapps/openam/WEB-INF/lib directory where AM is deployed.  Restart the web container to pick up the new node.  The node will then appear in the authentication trees components palette. 
 
-- Blacklisted apps
-    >If any of the blacklisted apps here will be found on connecting device then 'blackListedAppPresent' will be set to 'yes'. It will be set to 'no' otherwise. 
-    
- 
-
-Here's a sample tree with Intune node.
+## Sample Tree 
 
 ![ScreenShot](./example.png)
 
