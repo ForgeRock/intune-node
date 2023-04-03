@@ -63,7 +63,7 @@ public class IntuneNode implements Node {
 	private final Logger logger = LoggerFactory.getLogger(IntuneNode.class);
 	private final Config config;
 	private static final String BUNDLE = "org/rocknroll/intuneNode/IntuneNode";
-	private static final String loggerPrefix = "[MS Intune][Marketplace] ";
+	private static final String loggerPrefix = "[Microsoft Intune][Marketplace] ";
 
 	/**
 	 * Configuration for the node.
