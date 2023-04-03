@@ -23,25 +23,34 @@
     <artifactId>intuneNode</artifactId>
 
     <groupId>org.rockroll</groupId>
-    <version>1.0.0-SNAPSHOT</version>    
+    <version>0.0.4</version>    
     <name>Microsoft Intune Node</name>
     <description>Microsoft Intune integration Tree Node for ForgeRock's Identity Platform</description>
 
     <properties>
-        <am.version>7.2.0</am.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <am.version>LATEST</am.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <forgerockDistMgmtReleasesUrl>https://maven.forgerock.org/repo/internal-releases</forgerockDistMgmtReleasesUrl>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>forgerock-internal-releases</id>
-            <name>ForgeRock Internal Release Repository</name>
-            <url>https://maven.forgerock.org/repo/internal-releases</url>
-        </repository>
-    </distributionManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+	<distributionManagement>
+		<repository>
+			<id>forgerock-internal-releases</id>
+			<name>ForgeRock Internal Release Repository</name>
+			<url>https://maven.forgerock.org/repo/internal-releases</url>
+		</repository>
+	</distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -61,27 +70,6 @@
             <artifactId>auth-node-api</artifactId>
             <scope>provided</scope>
         </dependency>
-<dependency>
-
-      <groupId>org.forgerock.am</groupId>
-
-      <artifactId>openam-legacy-debug-api</artifactId>
-
-      <version>${am.version}</version>
-
-    </dependency>
-
-
-
-    <dependency>
-
-      <groupId>org.forgerock.am</groupId>
-
-      <artifactId>openam-shared</artifactId>
-
-      <version>${am.version}</version>
-
-    </dependency>
         <dependency>
             <groupId>org.forgerock.am</groupId>
             <artifactId>openam-guice-core</artifactId>
@@ -95,14 +83,27 @@
     </dependencies>
 
     <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>forgerock-private-releases</id>
-            <name>ForgeRock Private Release Repository</name>
-            <url>https://maven.forgerock.org/repo/private-releases</url>
-        </repository>
+		<repository>
+			<id>forgerock-internal-releases</id>
+			<name>ForgeRock Internal Releases Repository</name>
+			<url>https://maven.forgerock.org/repo/internal-releases</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+
+		<repository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
     </repositories>
 
 </project>

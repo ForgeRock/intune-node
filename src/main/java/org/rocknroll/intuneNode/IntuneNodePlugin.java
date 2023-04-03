@@ -19,14 +19,9 @@ package org.rocknroll.intuneNode;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.forgerock.openam.auth.node.api.AbstractNodeAmPlugin;
 import org.forgerock.openam.auth.node.api.Node;
 import org.forgerock.openam.plugins.PluginException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -62,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class IntuneNodePlugin extends AbstractNodeAmPlugin {
 
-	static private String currentVersion = "1.0.0";
+	static private String currentVersion = "0.0.4";
 	
     /** 
      * Specify the Map of list of node classes that the plugin is providing. These will then be installed and
