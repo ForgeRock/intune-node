@@ -23,7 +23,7 @@
     <artifactId>intuneNode</artifactId>
 
     <groupId>org.rockroll</groupId>
-    <version>0.0.4</version>    
+    <version>0.0.10</version>    
     <name>Microsoft Intune Node</name>
     <description>Microsoft Intune integration Tree Node for ForgeRock's Identity Platform</description>
 
