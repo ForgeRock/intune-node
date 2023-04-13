@@ -30,7 +30,7 @@ From Microsoft - "Important: Microsoft Graph APIs under the /beta version are su
 - DeviceID in SharedState
    >The default location for DeviceID is expected to be in the Header.  Setting this value to true indicates looking in the SharedState for the DeviceID instead of the Header. The format is the same: CN=f47d8e59-b60e-48a5-adc1-622cb2244zzz
 - Directory (tenant) ID
-   >Tenant Id is the Azure Active Directory\u2019s Global unique identifier (GUID)
+   >Tenant Id is the Azure Active Directory's Global unique identifier (GUID)
 - Application (client) ID
    >The application ID, or client ID, is a value the Microsoft identity platform assigns to your application when you register it in Azure AD.
 - Client Secret

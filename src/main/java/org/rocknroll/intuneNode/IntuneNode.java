@@ -53,6 +53,7 @@ public class IntuneNode implements Node {
 	//TODO As of today 4/13/2023 - no relationship exist for v1.0 from a device to it's apps - https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0
 	private static final String IntuneDeviceURLForApps = "https://graph.microsoft.com/beta/deviceManagement/manageddevices/";
 
+
 	/**
 	 * Configuration for the node.
 	 */
