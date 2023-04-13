@@ -1,19 +1,3 @@
-/*
- * The contents of this file are subject to the terms of the Common Development and
- * Distribution License (the License). You may not use this file except in compliance with the
- * License.
- *
- * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
- * specific language governing permission and limitations under the License.
- *
- * When distributing Covered Software, include this CDDL Header Notice in each file and include
- * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
- * Header, with the fields enclosed by brackets [] replaced by your own identifying
- * information: "Portions copyright [year] [name of copyright owner]".
- *
- * Copyright 2017-2018 ForgeRock AS.
- */
-
 package org.rocknroll.intuneNode;
 
 import java.io.PrintWriter;
@@ -64,6 +48,11 @@ public class IntuneNode implements Node {
 	private final Config config;
 	private static final String BUNDLE = "org/rocknroll/intuneNode/IntuneNode";
 	private static final String loggerPrefix = "[Microsoft Intune][Marketplace] ";
+	private static final String IntuneDeviceURL = "https://graph.microsoft.com/v1.0/deviceManagement/manageddevices/";
+	
+	//TODO As of today 4/13/2023 - no relationship exist for v1.0 from a device to it's apps - https://learn.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0
+	private static final String IntuneDeviceURLForApps = "https://graph.microsoft.com/beta/deviceManagement/manageddevices/";
+
 
 	/**
 	 * Configuration for the node.
@@ -247,7 +236,7 @@ public class IntuneNode implements Node {
 	private String checkCompliance(NodeState ns, String access_token, String deviceId) throws Exception {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 
-		HttpGet request = new HttpGet("https://graph.microsoft.com/beta/deviceManagement/manageddevices/" + deviceId);
+		HttpGet request = new HttpGet(IntuneDeviceURL + deviceId);
 		String bearerHeader = "Bearer " + access_token;
 		request.setHeader(HttpHeaders.AUTHORIZATION, bearerHeader);
 		HttpResponse response = httpClient.execute(request);
@@ -294,34 +283,15 @@ public class IntuneNode implements Node {
 			}
 		}
 
-		String deviceManagementState = jsonObject.getString("managementState");
 		String intuneComplianceState = jsonObject.getString("complianceState");
-		String complianceResult = "";
 
-		if (intuneComplianceState.equals("compliant")) {
-			complianceResult = "compliant";
-		} else if (deviceManagementState.equals("noncompliant")) {
-			complianceResult = "noncompiant";
-		} else if (deviceManagementState.equals("inGracePeriod")) {
-			complianceResult = "inGracePeriod";
-		} else if (deviceManagementState.equals("unknown")) {
-			complianceResult = "unknown";
-		} else if (deviceManagementState.equals("conflict")) {
-			complianceResult = "conflict";
-		} else if (deviceManagementState.equals("error")) {
-			complianceResult = "error";
-		} else if (deviceManagementState.equals("configManager")) {
-			complianceResult = "configManager";
-		}
-
-		return complianceResult;
+		return intuneComplianceState;
 	}
 
 	private void extractApps(NodeState ns, String access_token, String deviceId) throws Exception {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 
-		HttpGet request = new HttpGet(
-				"https://graph.microsoft.com/beta/deviceManagement/manageddevices/" + deviceId + "/detectedApps");
+		HttpGet request = new HttpGet(IntuneDeviceURLForApps + deviceId + "/detectedApps");
 		String bearerHeader = "Bearer " + access_token;
 		request.setHeader(HttpHeaders.AUTHORIZATION, bearerHeader);
 		HttpResponse response = httpClient.execute(request);

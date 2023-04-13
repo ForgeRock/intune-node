@@ -57,7 +57,7 @@ import org.forgerock.openam.plugins.PluginException;
  */
 public class IntuneNodePlugin extends AbstractNodeAmPlugin {
 
-	static private String currentVersion = "0.0.4";
+	static private String currentVersion = "0.0.10";
 	
     /** 
      * Specify the Map of list of node classes that the plugin is providing. These will then be installed and
