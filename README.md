@@ -75,6 +75,7 @@ Note: The Microsoft Graph API for Intune requires an active Intune license for t
 
 The DeviceId needs to be obtained from the TLS handshake.  That DeviceId needs to be placed in the Header between a proxy and Identity Cloud or needs to be placed in the SharedState.  Either way needs to occur before reaching this Microsoft Intune Node. 
 
+### cURL Commands that can be used to verify Intune setup
 Here are two cURL commands that can be used to verify your Intune setup before using the node:
 1. This first command retrieves the Access Token needed by the Intune node:
 > Request
