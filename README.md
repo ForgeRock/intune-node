@@ -75,6 +75,101 @@ Note: The Microsoft Graph API for Intune requires an active Intune license for t
 
 The DeviceId needs to be obtained from the TLS handshake.  That DeviceId needs to be placed in the Header between a proxy and Identity Cloud or needs to be placed in the SharedState.  Either way needs to occur before reaching this Microsoft Intune Node. 
 
+Here are two cURL commands that can be used to verify your Intune setup before using the node:
+1. This first command retrieves the Access Token needed by the Intune node:
+> Request
+```curl 
+curl --location 'https://login.microsoftonline.com/<tenant ID>/oauth2/v2.0/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=<application client ID>' \
+--data-urlencode 'client_secret=<client secret>' \
+--data-urlencode 'scope=https://graph.microsoft.com/.default' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'username=<Azure admin username>' \
+--data-urlencode 'password=<Azure admin pwd>'
+```
+> Expected Response
+```json
+{
+    "token_type": "Bearer",
+    "scope": "profile openid email https://graph.microsoft.com/DeviceManagementManagedDevices.Read.All https://graph.microsoft.com/User.Read https://graph.microsoft.com/.default",
+    "expires_in": 3971,
+    "ext_expires_in": 3971,
+    "access_token": "<this will be the jwt token used by the retrieve the device info cURL command below>"
+}
+```
+
+2. This second command retrieves the device info:
+> Request
+```curl
+curl --location 'https://graph.microsoft.com/v1.0/deviceManagement/manageddevices/<Intune Device ID>' \
+--header 'Authorization: Bearer <this is the jwt token returned by the cURL command above>'
+```
+> Expected Response
+```json
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#deviceManagement/managedDevices/$entity",
+    "id": "f61dc341-c9c9-40c1-abbd-6997016f4c9e",
+    "userId": "0f7e78ba-6e1f-485b-8b8b-fb86895f0498",
+    "deviceName": "WINDEV2404EVAL",
+    "managedDeviceOwnerType": "company",
+    "enrolledDateTime": "2024-05-15T14:13:19.376941Z",
+    "lastSyncDateTime": "2024-05-16T03:45:42.4309247Z",
+    "operatingSystem": "Windows",
+    "complianceState": "compliant",
+    "jailBroken": "Unknown",
+    "managementAgent": "mdm",
+    "osVersion": "10.0.22621.3447",
+    "easActivated": true,
+    "easDeviceId": "24783A3196BAFE89291A012E4B607591",
+    "easActivationDateTime": "2024-05-15T14:25:40.632661Z",
+    "azureADRegistered": true,
+    "deviceEnrollmentType": "windowsAzureADJoin",
+    "activationLockBypassCode": null,
+    "emailAddress": "cyril.grosjean+acarter-wkf-poc-stg@forgerock.com",
+    "azureADDeviceId": "e7f59723-3b4c-4783-89bf-9e42d492f4ac",
+    "deviceRegistrationState": "registered",
+    "deviceCategoryDisplayName": "",
+    "isSupervised": false,
+    "exchangeLastSuccessfulSyncDateTime": "0001-01-01T00:00:00Z",
+    "exchangeAccessState": "none",
+    "exchangeAccessStateReason": "none",
+    "remoteAssistanceSessionUrl": "",
+    "remoteAssistanceSessionErrorDetails": "",
+    "isEncrypted": false,
+    "userPrincipalName": "acarter@pingidentity-stg-poc.work.gd",
+    "model": "VirtualBox",
+    "manufacturer": "innotek GmbH",
+    "imei": null,
+    "complianceGracePeriodExpirationDateTime": "9999-12-31T23:59:59.9999999Z",
+    "serialNumber": "0",
+    "phoneNumber": null,
+    "androidSecurityPatchLevel": null,
+    "userDisplayName": "acarter",
+    "configurationManagerClientEnabledFeatures": null,
+    "wiFiMacAddress": null,
+    "deviceHealthAttestationState": null,
+    "subscriberCarrier": "",
+    "meid": null,
+    "totalStorageSpaceInBytes": 133661982720,
+    "freeStorageSpaceInBytes": 74671194112,
+    "managedDeviceName": "acarter_Windows_5/15/2024_2:13 PM",
+    "partnerReportedThreatState": "unknown",
+    "requireUserEnrollmentApproval": null,
+    "managementCertificateExpirationDate": "2025-05-15T03:56:04Z",
+    "iccid": "",
+    "udid": "",
+    "notes": null,
+    "ethernetMacAddress": "08002732B5A2",
+    "physicalMemoryInBytes": 0,
+    "enrollmentProfileName": "",
+    "deviceActionResults": []
+}
+```
+### Correct Device ID
+Please ensure you are using the correct Device ID when performing the verification test above.  You can retrieve the **Intune Device ID** from the Hardware section within Entra
+
+![Intune Device ID](./sample/intunedeviceid.png)
 
 ##  Additional Steps for Self-Managed Install
 For self-managed deployments, copy the .jar file from the ../target directory into the ../web-container/webapps/openam/WEB-INF/lib directory where AM is deployed.  Restart the web container to pick up the new node.  The node will then appear in the authentication trees components palette.
